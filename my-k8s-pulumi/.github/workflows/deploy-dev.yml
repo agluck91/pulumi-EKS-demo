@@ -1,0 +1,42 @@
+name: Deploy Dev
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy_to_dev:
+    name: Deploy Dev
+    runs-on: ubuntu-latest
+    env:
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      STACK_NAME: peopleticker/dev
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: arn:aws:iam::139539663033:role/gha_role-8206eea
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - name: Install Pulumi CLI
+        run: |
+          curl -fsSL https://get.pulumi.com | sh
+          export PATH=$PATH:/root/.pulumi/bin
+          pulumi version
+
+      - name: Login to Pulumi
+        run: pulumi login --token ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      - name: Install Pulumi Dependencies
+        working-directory: deployment
+        run: yarn install --frozen-lockfile
+
+      - name: Pulumi Up Dev
+        run: pulumi up --stack ${{ env.STACK_NAME }} --cwd deployment

@@ -1,0 +1,5 @@
+replicaCount: 3
+image:
+  repository: 139539663033.dkr.ecr.us-east-1.amazonaws.com/eksk8appdemo:latest
+labels:
+  app: eksk8appdemo

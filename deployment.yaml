@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-k8s-app-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-k8s-app
+  template:
+    metadata:
+      labels:
+        app: my-k8s-app
+    spec:
+      containers:
+        - name: my-k8s-app-container
+          image: 139539663033.dkr.ecr.us-east-1.amazonaws.com/eksk8appdemo:latest
+          ports:
+            - containerPort: 80

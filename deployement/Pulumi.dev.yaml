@@ -1,0 +1,2 @@
+config:
+  my-k8s-app:k8sNamespace: nginx-ingress
